@@ -1,4 +1,4 @@
-package Java_Campus_Project.Java_Warriors;
+package warriors.clientconsole;
 
 import java.util.Scanner;
 

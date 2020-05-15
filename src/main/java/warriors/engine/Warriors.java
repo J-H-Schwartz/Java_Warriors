@@ -1,6 +1,7 @@
 package warriors.engine;
 
 import java.io.BufferedReader;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -51,7 +52,7 @@ public class Warriors implements WarriorsAPI {
 
 		JsonBoardCreator jsb = new JsonBoardCreator();
 		try {
-			Path dirPath = Paths.get("/home/jonathan/Desktop/Repositories/eclipse-workspace/Java_Warriors/src/main/java/maps");
+			Path dirPath = Paths.get("src/ressources/maps");
 			try (DirectoryStream<Path> dirPaths = Files.newDirectoryStream(dirPath, "*.{json}")) {																				// .jdb only
 				for (Path file : dirPaths) {
 					JsonBoard newMap = (JsonBoard)jsb.createBoard(file);
