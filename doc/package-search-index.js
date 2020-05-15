@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"Java_Campus_Project.Java_Warriors"},{"l":"warriors.contracts"},{"l":"warriors.engine"},{"l":"warriors.engine.board"},{"l":"warriors.engine.ennemies"},{"l":"warriors.engine.equipements"},{"l":"warriors.engine.heroes"}]
