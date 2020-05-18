@@ -11,16 +11,15 @@ import com.google.gson.stream.JsonReader;
 
 import warriors.contracts.Map;
 
-public class JsonBoardCreator implements InstanceCreator<Map>{
+public class JsonBoardCreator implements InstanceCreator<Map> {
 	private Path file;
-	
-	
+
 	public JsonBoard createBoard(Path file) {
 		this.file = file;
-		JsonBoard newMap = (JsonBoard)createInstance(getClass());
+		JsonBoard newMap = (JsonBoard) createInstance(getClass());
 		return newMap;
 	}
-	
+
 	@Override
 	public JsonBoard createInstance(Type arg0) {
 		FileReader reader = null;
@@ -33,11 +32,11 @@ public class JsonBoardCreator implements InstanceCreator<Map>{
 			e.printStackTrace();
 		}
 		JsonReader jsonreader = new JsonReader(reader);
-		if (reader != null) {			
+		if (reader != null) {
 			gson = new Gson();
 			map = gson.fromJson(jsonreader, Board.class);
 		}
 		return new JsonBoard(map);
 	}
-	
+
 }

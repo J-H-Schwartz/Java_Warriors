@@ -1,3 +1,4 @@
+/home/jonathan/Desktop/Repositories/eclipse-workspace/Java_Warriors/src/main/java/warriors/clientconsole/ClientConsole.java
 /home/jonathan/Desktop/Repositories/eclipse-workspace/Java_Warriors/src/main/java/warriors/engine/board/JsonBoard.java
 /home/jonathan/Desktop/Repositories/eclipse-workspace/Java_Warriors/src/main/java/warriors/engine/equipements/PotionLarge.java
 /home/jonathan/Desktop/Repositories/eclipse-workspace/Java_Warriors/src/main/java/warriors/engine/equipements/Spell.java
@@ -25,7 +26,6 @@
 /home/jonathan/Desktop/Repositories/eclipse-workspace/Java_Warriors/src/main/java/warriors/engine/equipements/PotionMedium.java
 /home/jonathan/Desktop/Repositories/eclipse-workspace/Java_Warriors/src/main/java/warriors/engine/ennemies/Ennemi.java
 /home/jonathan/Desktop/Repositories/eclipse-workspace/Java_Warriors/src/main/java/warriors/contracts/Hero.java
-/home/jonathan/Desktop/Repositories/eclipse-workspace/Java_Warriors/src/main/java/Java_Campus_Project/Java_Warriors/ClientConsole.java
 /home/jonathan/Desktop/Repositories/eclipse-workspace/Java_Warriors/src/main/java/warriors/engine/equipements/LeftHandEquipementInterface.java
 /home/jonathan/Desktop/Repositories/eclipse-workspace/Java_Warriors/src/main/java/warriors/engine/board/BoardCaseEnnemy.java
 /home/jonathan/Desktop/Repositories/eclipse-workspace/Java_Warriors/src/main/java/warriors/engine/board/BoardCaseUpgrade.java
