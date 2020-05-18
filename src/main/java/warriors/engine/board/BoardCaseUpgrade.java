@@ -14,31 +14,31 @@ import warriors.engine.heroes.HeroCharacter;
 public class BoardCaseUpgrade extends BoardCase {
 	private Equipements loot;
 
-	public BoardCaseUpgrade(int id, int type) {
+	public BoardCaseUpgrade(int id, UpgradeType type) {
 		super(id);
-		this.caseStatus = 2;
-		if (type == 0) {
+		this.caseStatus = CaseType.UPGRADE_CASE;
+		if (type == UpgradeType.BOW) {
 			this.contains = "Bonus-Arme-Arc";
 			this.loot = new Bow();
-		} else if (type == 1) {
+		} else if (type == UpgradeType.HAMMER) {
 			this.contains = "Bonus-Arme-Massue";
 			this.loot = new Hammer();
-		} else if (type == 2) {
+		} else if (type == UpgradeType.SWORD) {
 			this.contains = "Bonus-Arme-Epée";
 			this.loot = new Sword();
-		} else if (type == 3) {
+		} else if (type == UpgradeType.LIGHTNING) {
 			this.contains = "Bonus-Sort-Éclair";
 			this.loot = new Lightning();
-		} else if (type == 4) {
+		} else if (type == UpgradeType.FIREBALL) {
 			this.contains = "Bonus-Sort-Boule de Feu";
 			this.loot = new Fireball();
-		} else if (type == 5) {
+		} else if (type == UpgradeType.POTION) {
 			this.contains = "Bonus-Potion-Mineure";
 			this.loot = new Potion();
-		} else if (type == 6) {
+		} else if (type == UpgradeType.POTIONM) {
 			this.contains = "Bonus-Potion-Standard";
 			this.loot = new PotionMedium();
-		} else if (type == 7) {
+		} else if (type == UpgradeType.POTIONL) {
 			this.contains = "Bonus-Potion-Large";
 			this.loot = new PotionLarge();
 		}
@@ -50,7 +50,8 @@ public class BoardCaseUpgrade extends BoardCase {
 
 	@Override
 	public String manageCaseEvent(HeroCharacter hero, String tmp) {
-		tmp = hero.manageLoot(this.getLoot(), tmp);
+		String[] containment = this.contains.split("-");
+		tmp = hero.manageLoot(this.getLoot(),containment[1], tmp);
 		return tmp;
 	}
 }

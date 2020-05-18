@@ -1,10 +1,8 @@
 package warriors.engine.heroes;
 
 import warriors.contracts.Hero;
-import warriors.engine.ennemies.Ennemi;
+import warriors.engine.enemies.Enemy;
 import warriors.engine.equipements.Equipements;
-import warriors.engine.equipements.LeftHandEquipement;
-import warriors.engine.equipements.RightHandEquipement;
 
 /**
  * Character abstract SuperClass
@@ -31,12 +29,12 @@ public abstract class HeroCharacter implements Hero, CharacterClassInterface {
 	protected String raceName;
 
 	/** Warrior object Weapon object */
-	protected RightHandEquipement rightHand;
+	protected Equipements rightHand;
 
 	/** Warrior object Shield object */
-	protected LeftHandEquipement leftHand;
+	protected Equipements leftHand;
 
-	public String attack(String tmp, Ennemi ennemi) {
+	public String attack(String tmp, Enemy ennemi) {
 		ennemi.setLife(ennemi.getLife() - this.getAttackMove());
 		tmp = tmp + String.format(
 				"\nVous attaquez le %s ennemi et lui infligez %d dégats.\nSes points de vie sont maintenant à %d",
@@ -44,7 +42,7 @@ public abstract class HeroCharacter implements Hero, CharacterClassInterface {
 		return tmp;
 	}
 
-	public abstract String manageLoot(Equipements loot, String tmp);
+	public abstract String manageLoot(Equipements loot, String type, String tmp);
 
 	@Override
 	public void setName(String newName) {
@@ -109,28 +107,28 @@ public abstract class HeroCharacter implements Hero, CharacterClassInterface {
 	/**
 	 * @return the rightHand
 	 */
-	public RightHandEquipement getRightHand() {
+	public Equipements getRightHand() {
 		return rightHand;
 	}
 
 	/**
 	 * @param rightHand the rightHand to set
 	 */
-	public void setRightHand(RightHandEquipement rightHand) {
+	public void setRightHand(Equipements rightHand) {
 		this.rightHand = rightHand;
 	}
 
 	/**
 	 * @return the leftHand
 	 */
-	public LeftHandEquipement getLeftHand() {
+	public Equipements getLeftHand() {
 		return leftHand;
 	}
 
 	/**
 	 * @param leftHand the leftHand to set
 	 */
-	public void setLeftHand(LeftHandEquipement leftHand) {
+	public void setLeftHand(Equipements leftHand) {
 		this.leftHand = leftHand;
 	}
 }

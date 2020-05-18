@@ -4,10 +4,12 @@ package warriors.engine.equipements;
  * Spell object Data class.
  * 
  */
-public class Spell extends RightHandEquipement {
+public class Spell extends Equipements {
+	private static final String DEFAULT_SPELL_NAME = "Spark";
+	private static final int DEFAULT_SPELL_DMG = 0;
 
 	public Spell() {
-		this("Spark", 1);
+		this(DEFAULT_SPELL_NAME, DEFAULT_SPELL_DMG);
 	}
 
 	public Spell(String nameArg, int effectArg) {

@@ -21,6 +21,6 @@ public interface CharacterClassInterface {
 
 	void setRaceName(String raceName);
 	
-	abstract String manageLoot(Equipements loot, String tmp);
+	abstract String manageLoot(Equipements loot, String type, String tmp);
 
 }

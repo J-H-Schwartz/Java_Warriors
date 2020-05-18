@@ -5,13 +5,11 @@ import warriors.engine.heroes.HeroCharacter;
 public class BoardCase {
 
 	protected int caseID;
-	protected int caseStatus;
+	protected CaseType caseStatus;
 	protected String contains;
 
 	public BoardCase(int id) {
 		this.caseID = id;
-		this.caseStatus = 0;
-		this.contains = "Empty";
 	}
 
 	public String manageCaseEvent(HeroCharacter hero, String tmp) {
@@ -36,14 +34,14 @@ public class BoardCase {
 	/**
 	 * @return the caseStatus
 	 */
-	public int getCaseStatus() {
+	public CaseType getCaseStatus() {
 		return caseStatus;
 	}
 
 	/**
 	 * @param caseStatus the caseStatus to set
 	 */
-	public void setCaseStatus(int caseStatus) {
+	public void setCaseStatus(CaseType caseStatus) {
 		this.caseStatus = caseStatus;
 	}
 

@@ -4,6 +4,11 @@ public class Equipements {
 	protected String name;
 	protected int effect;
 
+	public Equipements(String name, int effect) {
+		this.effect = effect;
+		this.name = name;
+	}
+	
 	public void setName(String newName) {
 		this.name = newName;
 	}

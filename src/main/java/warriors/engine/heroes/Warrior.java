@@ -1,10 +1,7 @@
 package warriors.engine.heroes;
 
 import warriors.engine.equipements.Equipements;
-import warriors.engine.equipements.LeftHandEquipement;
 import warriors.engine.equipements.Potion;
-import warriors.engine.equipements.RightHandEquipement;
-import warriors.engine.equipements.Spell;
 import warriors.engine.equipements.Weapon;
 
 /**
@@ -35,10 +32,10 @@ public class Warrior extends HeroCharacter implements WarriorClassInterface {
 	}
 
 	@Override
-	public String manageLoot(Equipements loot, String tmp) {
-		if (loot instanceof Weapon) {
+	public String manageLoot(Equipements loot, String type, String tmp) {
+		if (type.equals("Arme")) {
 			if (loot.getEffect() > this.getRightHand().getEffect()) {
-				this.setRightHand((RightHandEquipement) loot);
+				this.setRightHand(loot);
 				tmp = tmp + String.format(
 						"\nVous avez trouvé une nouvelle arme ! %s, bonus d'attaque: %d\nVotre puissance d'attaque s'élève à %d",
 						loot.getName(), loot.getEffect(), this.getAttackMove());
@@ -47,11 +44,11 @@ public class Warrior extends HeroCharacter implements WarriorClassInterface {
 						"\nVous avez trouvé une nouvelle arme, mais la votre est meilleure. %s, bonus d'attaque: %d",
 						loot.getName(), loot.getEffect());
 			}
-		} else if (loot instanceof Spell) {
+		} else if (type.equals("Sort")) {
 			tmp = tmp + String.format(
 					"\nVous avez trouvé un sort mais ne pouvez vous en équiper. %s, bonus d'attaque: %d",
 					loot.getName(), loot.getEffect());
-		} else if (loot instanceof Potion){
+		} else if (type.equals("Potion")){
 			this.setLife(this.getLife() + loot.getEffect());
 			tmp = tmp + String.format("\nVous avez trouvé une potion de soin. %s, soin: %d\nVotre vie passe à %d.",
 					loot.getName(), loot.getEffect(), this.getLife());
@@ -64,34 +61,6 @@ public class Warrior extends HeroCharacter implements WarriorClassInterface {
 		return "Personnage " + this.name + " " + this.raceName + " " + this.className + "\nLife : " + this.life
 				+ " Attack Power : " + this.attackLevel + " Weapon : " + this.rightHand.getName() + " Potion : "
 				+ this.leftHand.getName();
-	}
-
-	/**
-	 * @return the weapon
-	 */
-	public RightHandEquipement getWeapon() {
-		return rightHand;
-	}
-
-	/**
-	 * @param weapon the weapon to set
-	 */
-	public void setWeapon(Weapon weapon) {
-		this.rightHand = weapon;
-	}
-
-	/**
-	 * @return the shield
-	 */
-	public LeftHandEquipement getShield() {
-		return leftHand;
-	}
-
-	/**
-	 * @param shield the shield to set
-	 */
-	public void setPotion(Potion potion) {
-		this.leftHand = potion;
 	}
 
 	@Override

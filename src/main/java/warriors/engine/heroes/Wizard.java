@@ -1,11 +1,9 @@
 package warriors.engine.heroes;
 
 import warriors.engine.equipements.Equipements;
-import warriors.engine.equipements.LeftHandEquipement;
 import warriors.engine.equipements.Potion;
-import warriors.engine.equipements.RightHandEquipement;
 import warriors.engine.equipements.Spell;
-import warriors.engine.equipements.Weapon;
+
 
 /**
  * Wizard object Data class.
@@ -35,10 +33,10 @@ public class Wizard extends HeroCharacter implements WizardClassInterface {
 	}
 
 	@Override
-	public String manageLoot(Equipements loot, String tmp) {
-		if (loot instanceof Spell) {
+	public String manageLoot(Equipements loot, String type, String tmp) {
+		if (type.equals("Sort")) {
 			if (loot.getEffect() > this.getRightHand().getEffect()) {
-				this.setRightHand((RightHandEquipement) loot);
+				this.setRightHand(loot);
 				tmp = tmp + String.format(
 						"\nVous avez trouvé un nouveau sort ! %s, bonus d'attaque: %d\nVotre puissance d'attaque s'élève à %d",
 						loot.getName(), loot.getEffect(), this.getAttackMove());
@@ -47,11 +45,11 @@ public class Wizard extends HeroCharacter implements WizardClassInterface {
 						"\nVous avez trouvé un nouveau sort, mais le votre est meilleur. %s, bonus d'attaque: %d",
 						loot.getName(), loot.getEffect());
 			}
-		} else if (loot instanceof Weapon) {
+		} else if (type.equals("Arme")) {
 			tmp = tmp + String.format(
 					"\nVous avez trouvé une arme mais ne pouvez vous en équiper. %s, bonus d'attaque: %d",
 					loot.getName(), loot.getEffect());
-		} else if (loot instanceof Potion) {
+		} else if (type.equals("Potion")) {
 			this.setLife(this.getLife() + loot.getEffect());
 			tmp = tmp + String.format("\nVous avez trouvé une potion de soin. %s, soin: %d\nVotre vie passe à %d.",
 					loot.getName(), loot.getEffect(), this.getLife());
@@ -64,34 +62,6 @@ public class Wizard extends HeroCharacter implements WizardClassInterface {
 		return "Personnage " + this.name + " " + this.raceName + " " + this.className + "\nLife : " + this.life
 				+ " Attack Power : " + this.attackLevel + " Weapon : " + this.rightHand.getName() + " Shield : "
 				+ this.leftHand.getName();
-	}
-
-	/**
-	 * @return the spell
-	 */
-	public RightHandEquipement getSpell() {
-		return rightHand;
-	}
-
-	/**
-	 * @param spell the spell to set
-	 */
-	public void setSpell(Spell spell) {
-		this.rightHand = spell;
-	}
-
-	/**
-	 * @return the potion
-	 */
-	public LeftHandEquipement getPotion() {
-		return leftHand;
-	}
-
-	/**
-	 * @param potion the potion to set
-	 */
-	public void setPotion(Potion potion) {
-		this.leftHand = potion;
 	}
 
 	@Override
@@ -115,4 +85,5 @@ public class Wizard extends HeroCharacter implements WizardClassInterface {
 			this.attackLevel = attackPower;
 		}
 	}
+
 }

@@ -1,8 +1,11 @@
 package warriors.engine.equipements;
 
-public class PotionLarge extends Potion {
+public class PotionLarge extends Equipements {
+	private static final String POTIONL_NAME = "Potion Large";
+	private static final int POTIONL_EFFECT = 5;
+	
 	public PotionLarge() {
-		super("Potion Large", 5);
+		super(POTIONL_NAME, POTIONL_EFFECT);
 	}
 
 }

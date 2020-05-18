@@ -1,14 +1,14 @@
-package warriors.engine.ennemies;
+package warriors.engine.enemies;
 
 import warriors.engine.heroes.HeroCharacter;
 
-public abstract class Ennemi {
+public class Enemy {
 
 	String name;
 	int life;
 	int attackPower;
 
-	public Ennemi(String name, int life, int attackPower) {
+	public Enemy(String name, int life, int attackPower) {
 		this.name = name;
 		this.life = life;
 		this.attackPower = attackPower;

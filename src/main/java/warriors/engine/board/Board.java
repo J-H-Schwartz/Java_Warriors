@@ -7,18 +7,6 @@ import warriors.contracts.Map;
 
 public class Board implements Map {
 
-	protected static final int ENNEMI_GOBELIN_CASE = 0;
-	protected static final int ENNEMI_SORCERER_CASE = 1;
-	protected static final int ENNEMI_DRAGON_CASE = 2;
-	protected static final int BONUS_BOW_CASE = 0;
-	protected static final int BONUS_HAMMER_CASE = 1;
-	protected static final int BONUS_SWORD_CASE = 2;
-	protected static final int BONUS_LIGHTNING_CASE = 3;
-	protected static final int BONUS_FIREBALL_CASE = 4;
-	protected static final int BONUS_SMALLPOTION_CASE = 5;
-	protected static final int BONUS_MEDIUMPOTION_CASE = 6;
-	protected static final int BONUS_LARGEPOTION_CASE = 7;
-
 	private static final int ENNEMI_GOBELIN_NUMBER = 12;
 	private static final int ENNEMI_SORCERER_NUMBER = 10;
 	private static final int ENNEMI_DRAGON_NUMBER = 8;
@@ -39,71 +27,67 @@ public class Board implements Map {
 		return map;
 	}
 
-	protected Board() {
-		
-	}
-	
 	public Board(String name) {
 		this.map = new ArrayList<BoardCase>();
 		this.name = name;
-		generateMap();
+		generateRandomizedMap();
 	}
 
-	private void generateMap() {
-		numberOfCase = 64;
+	private void generateRandomizedMap() {
 		int index = 0;
 		for (int i = 0; i < ENNEMI_DRAGON_NUMBER; i++) {
-			map.add(new BoardCaseEnnemy(index, ENNEMI_DRAGON_CASE));
+			map.add(new BoardCaseEnemy(index, EnemyType.DRAGON));
 			index++;
 		}
 		for (int i = 0; i < ENNEMI_GOBELIN_NUMBER; i++) {
-			map.add(new BoardCaseEnnemy(index, ENNEMI_GOBELIN_CASE));
+			map.add(new BoardCaseEnemy(index, EnemyType.GOBLIN));
 			index++;
 		}
 		for (int i = 0; i < ENNEMI_SORCERER_NUMBER; i++) {
-			map.add(new BoardCaseEnnemy(index, ENNEMI_SORCERER_CASE));
+			map.add(new BoardCaseEnemy(index, EnemyType.SORCERER));
 			index++;
 		}
 		for (int i = 0; i < BONUS_BOW_NUMBER; i++) {
-			map.add(new BoardCaseUpgrade(index, BONUS_BOW_CASE));
+			map.add(new BoardCaseUpgrade(index, UpgradeType.BOW));
 			index++;
 		}
 		for (int i = 0; i < BONUS_HAMMER_NUMBER; i++) {
-			map.add(new BoardCaseUpgrade(index, BONUS_HAMMER_CASE));
+			map.add(new BoardCaseUpgrade(index, UpgradeType.HAMMER));
 			index++;
 		}
 		for (int i = 0; i < BONUS_SWORD_NUMBER; i++) {
-			map.add(new BoardCaseUpgrade(index, BONUS_SWORD_CASE));
+			map.add(new BoardCaseUpgrade(index, UpgradeType.SWORD));
 			index++;
 		}
 		for (int i = 0; i < BONUS_LIGHTNING_NUMBER; i++) {
-			map.add(new BoardCaseUpgrade(index, BONUS_LIGHTNING_CASE));
+			map.add(new BoardCaseUpgrade(index, UpgradeType.LIGHTNING));
 			index++;
 		}
 		for (int i = 0; i < BONUS_FIREBALL_NUMBER; i++) {
-			map.add(new BoardCaseUpgrade(index, BONUS_FIREBALL_CASE));
+			map.add(new BoardCaseUpgrade(index, UpgradeType.FIREBALL));
 			index++;
 		}
 		for (int i = 0; i < BONUS_SMALLPOTION_NUMBER; i++) {
-			map.add(new BoardCaseUpgrade(index, BONUS_SMALLPOTION_CASE));
+			map.add(new BoardCaseUpgrade(index, UpgradeType.POTION));
 			index++;
 		}
 		for (int i = 0; i < BONUS_MEDIUMPOTION_NUMBER; i++) {
-			map.add(new BoardCaseUpgrade(index, BONUS_MEDIUMPOTION_CASE));
+			map.add(new BoardCaseUpgrade(index, UpgradeType.POTIONM));
 			index++;
 		}
 		for (int i = 0; i < BONUS_LARGEPOTION_NUMBER; i++) {
-			map.add(new BoardCaseUpgrade(index, BONUS_LARGEPOTION_CASE));
+			map.add(new BoardCaseUpgrade(index, UpgradeType.POTIONL));
 			index++;
 		}
 		for (int i = 0; i < 8; i++) {
-			map.add(new BoardCase(index));
+			map.add(new BoardCaseEmpty(index));
 			index++;
 		}
 		Collections.shuffle(map);
 		for (int i = 0; i < map.size(); i++) {
 			map.get(i).setCaseID(i);
 		}
+		numberOfCase = map.size();
 		System.out.println(String.format("Plateau de %d cases généré !", index));
 	}
 
