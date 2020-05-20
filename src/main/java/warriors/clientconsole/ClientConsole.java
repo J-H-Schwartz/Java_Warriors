@@ -8,26 +8,31 @@ import warriors.contracts.Hero;
 import warriors.contracts.Map;
 import warriors.contracts.WarriorsAPI;
 import warriors.engine.Warriors;
+import warriors.engine.database.DbCharacterManager;
+import warriors.engine.database.DbConnect;
 
 public class ClientConsole {
 
 	private static String MENU_COMMENCER_PARTIE = "1";
 	private static String MENU_QUITTER = "2";
+	private static String MENU_PERSONNAGES = "3";
 
 	public static void main(String[] args) {
 		WarriorsAPI warriors;
+		Scanner sc = new Scanner(System.in);
 		if (args.length > 0 && args[0].equals("--debug")) {
-			warriors = new Warriors(args[1]);
+			warriors = new Warriors(args[1], sc);
 		} else {
-			warriors = new Warriors("");
+			warriors = new Warriors("", sc);
 		}
 
-		Scanner sc = new Scanner(System.in);
 		String menuChoice = "";
 		do {
 			menuChoice = displayMenu(sc);
 			if (menuChoice.equals(MENU_COMMENCER_PARTIE)) {
 				startGame(warriors, sc);
+			} else if (menuChoice.equals(MENU_PERSONNAGES)) {
+				new DbCharacterManager(DbConnect.dbConnect()).managerInterface(sc);
 			}
 		} while (!menuChoice.equals(MENU_QUITTER));
 		sc.close();
@@ -38,7 +43,6 @@ public class ClientConsole {
 		System.out.println();
 		System.out.println("Entrez votre nom:");
 		String playerName = sc.nextLine();
-
 		System.out.println("Choisissez votre h�ro:");
 		for (int i = 0; i < warriors.getHeroes().size(); i++) {
 			Hero heroe = warriors.getHeroes().get(i);
@@ -74,6 +78,7 @@ public class ClientConsole {
 		System.out.println("================== Java Warriors ==================");
 		System.out.println("1 - Commencer une partie");
 		System.out.println("2 - Quitter");
+		System.out.println("3 - Gérer personnages");
 		if (sc.hasNext()) {
 			String choice = sc.nextLine();
 			return choice;

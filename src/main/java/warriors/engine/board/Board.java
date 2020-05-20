@@ -18,6 +18,7 @@ public class Board implements Map {
 	private static final int BONUS_SMALLPOTION_NUMBER = 5;
 	private static final int BONUS_MEDIUMPOTION_NUMBER = 3;
 	private static final int BONUS_LARGEPOTION_NUMBER = 1;
+	private static final int EMPTY_CASE_NUMBER = 8;
 
 	private String name;
 	private int numberOfCase;
@@ -35,16 +36,16 @@ public class Board implements Map {
 
 	private void generateRandomizedMap() {
 		int index = 0;
-		for (int i = 0; i < ENNEMI_DRAGON_NUMBER; i++) {
-			map.add(new BoardCaseEnemy(index, EnemyType.DRAGON));
-			index++;
-		}
 		for (int i = 0; i < ENNEMI_GOBELIN_NUMBER; i++) {
 			map.add(new BoardCaseEnemy(index, EnemyType.GOBLIN));
 			index++;
 		}
 		for (int i = 0; i < ENNEMI_SORCERER_NUMBER; i++) {
 			map.add(new BoardCaseEnemy(index, EnemyType.SORCERER));
+			index++;
+		}
+		for (int i = 0; i < ENNEMI_DRAGON_NUMBER; i++) {
+			map.add(new BoardCaseEnemy(index, EnemyType.DRAGON));
 			index++;
 		}
 		for (int i = 0; i < BONUS_BOW_NUMBER; i++) {
@@ -79,7 +80,7 @@ public class Board implements Map {
 			map.add(new BoardCaseUpgrade(index, UpgradeType.POTIONL));
 			index++;
 		}
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < EMPTY_CASE_NUMBER; i++) {
 			map.add(new BoardCaseEmpty(index));
 			index++;
 		}

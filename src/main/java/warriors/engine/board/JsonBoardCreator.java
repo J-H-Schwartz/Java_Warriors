@@ -2,6 +2,7 @@ package warriors.engine.board;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 
@@ -17,7 +18,7 @@ public class JsonBoardCreator implements InstanceCreator<Map> {
 
 	public Board createBoard(Path file) {
 		this.file = file;
-		Board newMap = (Board) createInstance(getClass());
+		Board newMap = (Board)createInstance(getClass());
 		return newMap;
 	}
 
@@ -36,8 +37,16 @@ public class JsonBoardCreator implements InstanceCreator<Map> {
 		if (reader != null) {
 			gson = new GsonBuilder().registerTypeAdapter(BoardCase.class, new InterfaceAdapter<BoardCase>()).create();
 			map = gson.fromJson(jsonreader, Board.class);
+			return map;
+		} else {
+			try {
+				jsonreader.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
 		}
-		return map;
 	}
 
 }

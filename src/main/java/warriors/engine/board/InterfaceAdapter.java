@@ -22,7 +22,7 @@ public final class InterfaceAdapter<T> implements JsonSerializer<T>, JsonDeseria
         final Type actualType = typeForName(typeName); 
 		return context.deserialize(data, actualType);
 	}
-
+	
 	@Override
 	public JsonElement serialize(T object, Type interfaceType, JsonSerializationContext context) {
 		final JsonObject wrapper = new JsonObject();
