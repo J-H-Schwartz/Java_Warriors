@@ -1,8 +1,8 @@
 package warriors.engine.database;
 
 import java.sql.Connection;
-import java.sql.Statement;
-import java.util.Scanner;
+import java.util.ArrayList;
+
 
 public abstract class DAO<T> {
 	
@@ -12,15 +12,11 @@ public abstract class DAO<T> {
 		this.conn = conn;
 	}
 	
-	public abstract void managerInterface(Scanner sc);
+	protected abstract boolean create(Object object);
 	
-	protected abstract void create(Statement state, Scanner sc);
+	protected abstract boolean update(Object object);
 	
-	protected abstract void update(Statement state, Scanner sc);
+	protected abstract boolean delete(Object object);
 	
-	protected abstract void list(Statement state);
-	
-	protected abstract void show(Statement state, Scanner sc);
-	
-	protected abstract void delete(Statement state, Scanner sc);
+	protected abstract ArrayList<T> findAll();
 }

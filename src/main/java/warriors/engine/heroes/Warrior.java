@@ -1,7 +1,10 @@
 package warriors.engine.heroes;
 
+import warriors.engine.equipements.Bow;
 import warriors.engine.equipements.Equipements;
+import warriors.engine.equipements.Hammer;
 import warriors.engine.equipements.Potion;
+import warriors.engine.equipements.Sword;
 import warriors.engine.equipements.Weapon;
 
 /**
@@ -21,6 +24,30 @@ public class Warrior extends HeroCharacter implements WarriorClassInterface {
 
 	/** Warrior max Attack power constant */
 	public static final int WARRIOR_MIN_ATTACK_POWER = 5;
+
+	public Warrior(String nameArg, int lifeArg, int attackPowerArg, String imageUrl, String weapon, String shield) {
+		this.className = "Warrior";
+		this.name = nameArg;
+		this.life = lifeArg;
+		this.imageUrl = imageUrl;
+		this.attackLevel = attackPowerArg;
+		switch (weapon) {
+		case "Sword":
+			this.rightHand = new Sword();
+			break;
+		case "Hammer":
+			this.rightHand = new Hammer();
+			break;
+		case "Bow":
+			this.rightHand = new Bow();
+			break;
+		default:
+			this.rightHand = new Weapon();
+			break;
+		}
+		this.shield = shield;
+		this.leftHand = new Potion();
+	}
 
 	public Warrior(String nameArg, int lifeArg, int attackPowerArg) {
 		this.className = "Warrior";
@@ -48,7 +75,7 @@ public class Warrior extends HeroCharacter implements WarriorClassInterface {
 			tmp = tmp + String.format(
 					"\nVous avez trouvé un sort mais ne pouvez vous en équiper. %s, bonus d'attaque: %d",
 					loot.getName(), loot.getEffect());
-		} else if (type.equals("Potion")){
+		} else if (type.equals("Potion")) {
 			this.setLife(this.getLife() + loot.getEffect());
 			tmp = tmp + String.format("\nVous avez trouvé une potion de soin. %s, soin: %d\nVotre vie passe à %d.",
 					loot.getName(), loot.getEffect(), this.getLife());

@@ -9,6 +9,8 @@ import warriors.engine.equipements.Equipements;
  *
  */
 public abstract class HeroCharacter implements Hero, CharacterClassInterface {
+	
+	protected int id;
 
 	/** Character class name */
 	protected String className;
@@ -33,6 +35,9 @@ public abstract class HeroCharacter implements Hero, CharacterClassInterface {
 
 	/** Warrior object Shield object */
 	protected Equipements leftHand;
+	
+	/** Character object Shield */
+	protected String shield;
 
 	public String attack(String tmp, Enemy ennemi) {
 		ennemi.setLife(ennemi.getLife() - this.getAttackMove());
@@ -130,5 +135,40 @@ public abstract class HeroCharacter implements Hero, CharacterClassInterface {
 	 */
 	public void setLeftHand(Equipements leftHand) {
 		this.leftHand = leftHand;
+	}
+
+	/**
+	 * @return the shield
+	 */
+	public String getShield() {
+		return shield;
+	}
+
+	/**
+	 * @param shield the shield to set
+	 */
+	public void setShield(String shield) {
+		this.shield = shield;
+	}
+
+	/**
+	 * @return the imageUrl
+	 */
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
 	}
 }

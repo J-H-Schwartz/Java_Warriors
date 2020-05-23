@@ -8,6 +8,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -28,8 +29,8 @@ import warriors.contracts.WarriorsAPI;
 import warriors.engine.board.Board;
 import warriors.engine.board.BoardCase;
 import warriors.engine.board.JsonBoardCreator;
-import warriors.engine.database.DbCharacterManager;
 import warriors.engine.database.DbConnect;
+import warriors.engine.database.HeroDao;
 import warriors.engine.heroes.Warrior;
 import warriors.engine.heroes.Wizard;
 import warriors.engine.heroes.HeroCharacter;
@@ -42,6 +43,8 @@ public class Warriors implements WarriorsAPI {
 	private ArrayList<Hero> warriors;
 	private ArrayList<Map> maps;
 	private ArrayList<Game> games;
+	
+	private Connection conn = DbConnect.dbConnect();
 
 	private int debugDicesIndex;
 	private DebugStatus debugStatus;
@@ -156,13 +159,17 @@ public class Warriors implements WarriorsAPI {
 			tmp = game.manageGameLoss(tmp);
 			debugDicesIndex = 0;
 		}
+		boolean saveResult = new HeroDao(conn).update((HeroCharacter)game.getCharacter());
+		if (!saveResult) {
+			tmp = tmp + "\nErreur lors de la sauvegarde !\n";
+		}
 		game.setLastLog(tmp);
 		return game;
 	}
 
 	@Override
 	public List<? extends Hero> getHeroes() {
-		warriors = new DbCharacterManager(DbConnect.dbConnect()).dbHeroesGetter();
+		warriors = new HeroDao(conn).findAll();
 		return warriors;
 	}
 

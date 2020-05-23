@@ -9,7 +9,6 @@ import warriors.contracts.Map;
 import warriors.contracts.WarriorsAPI;
 import warriors.engine.Warriors;
 import warriors.engine.database.DbCharacterManager;
-import warriors.engine.database.DbConnect;
 
 public class ClientConsole {
 
@@ -32,7 +31,7 @@ public class ClientConsole {
 			if (menuChoice.equals(MENU_COMMENCER_PARTIE)) {
 				startGame(warriors, sc);
 			} else if (menuChoice.equals(MENU_PERSONNAGES)) {
-				new DbCharacterManager(DbConnect.dbConnect()).managerInterface(sc);
+				new DbCharacterManager().managerInterface(sc);
 			}
 		} while (!menuChoice.equals(MENU_QUITTER));
 		sc.close();

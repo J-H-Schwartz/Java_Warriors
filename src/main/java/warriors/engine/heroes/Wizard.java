@@ -1,9 +1,10 @@
 package warriors.engine.heroes;
 
 import warriors.engine.equipements.Equipements;
+import warriors.engine.equipements.Fireball;
+import warriors.engine.equipements.Lightning;
 import warriors.engine.equipements.Potion;
 import warriors.engine.equipements.Spell;
-
 
 /**
  * Wizard object Data class.
@@ -22,6 +23,27 @@ public class Wizard extends HeroCharacter implements WizardClassInterface {
 
 	/** Wizard min Attack power constant */
 	public static final int WIZARD_MIN_ATTACK_POWER = 8;
+
+	public Wizard(String nameArg, int lifeArg, int attackPowerArg, String imageUrl, String weapon, String shield) {
+		this.className = "Wizard";
+		this.name = nameArg;
+		this.life = lifeArg;
+		this.imageUrl = imageUrl;
+		this.attackLevel = attackPowerArg;
+		switch (weapon) {
+		case "Lightning":
+			this.rightHand = new Lightning();
+			break;
+		case "Fireball":
+			this.rightHand = new Fireball();
+			break;
+		default:
+			this.rightHand = new Spell();
+			break;
+		}
+		this.shield = shield;
+		this.leftHand = new Potion();
+	}
 
 	public Wizard(String nameArg, int lifeArg, int attackPowerArg) {
 		this.className = "Wizard";

@@ -1,59 +1,44 @@
 package warriors.engine.database;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import warriors.contracts.Hero;
+import warriors.engine.heroes.HeroCharacter;
 import warriors.engine.heroes.Warrior;
 import warriors.engine.heroes.Wizard;
 
-public class DbCharacterManager extends DAO<Hero> {
+public class DbCharacterManager {
+	
+	private Connection conn = DbConnect.dbConnect();
 
-	public DbCharacterManager(Connection conn) {
-		super(conn);
-	}
-
-	@Override
 	public void managerInterface(Scanner sc) {
-		Statement state;
-		try {
-			// Création d'un objet Statement
-			state = conn.createStatement();
-			String choice = "";
 
-			while (!choice.equals("0")) {
-				System.out.println(
-						"Que voulez-vous faire ?\n1 - Lister personnages\n2 - Créer personnage\n3 - Supprimer personnage\n4 - Afficher un personnage\n5 - Modifier personnage\n0 - Quitter\n");
-				choice = sc.nextLine();
-				if (choice.equals("1")) {
-					this.list(state);
-				} else if (choice.equals("2")) {
-					this.create(state, sc);
-				} else if (choice.equals("3")) {
-					this.delete(state, sc);
-				} else if (choice.equals("4")) {
-					this.show(state, sc);
-				} else if (choice.equals("5")) {
-					this.update(state, sc);
-				} else if (choice.equals("0")) {
-					System.out.println("Retour au menu précédent.");
-				} else
-					System.out.println("Commande non reconnue.");
-			}
-			state.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String choice = "";
+		while (!choice.equals("0")) {
+			System.out.println(
+					"Que voulez-vous faire ?\n1 - Lister personnages\n2 - Créer personnage\n3 - Supprimer personnage\n4 - Afficher un personnage\n5 - Modifier personnage\n0 - Quitter\n");
+			choice = sc.nextLine();
+			if (choice.equals("1")) {
+				this.listHero();
+			} else if (choice.equals("2")) {
+				this.createHero(sc);
+			} else if (choice.equals("3")) {
+				this.deleteHero(sc);
+			} else if (choice.equals("4")) {
+				this.showHero(sc);
+			} else if (choice.equals("5")) {
+				this.updateHero(sc);
+			} else if (choice.equals("0")) {
+				System.out.println("Retour au menu précédent.");
+			} else
+				System.out.println("Commande non reconnue.");
 		}
+
 	}
 
-	@Override
-	protected void create(Statement state, Scanner sc) {
+	protected void createHero(Scanner sc) {
 		String className = "";
 		do {
 			System.out.println("Classe du personnage (Warrior, Wizard):");
@@ -73,172 +58,174 @@ public class DbCharacterManager extends DAO<Hero> {
 		System.out.println("Attaque du personnage :");
 		int attackLevel = sc.nextInt();
 		sc.nextLine();
-		try {
-			state.execute(String.format(
-					"INSERT INTO Hero(Type, Name, ImageUrl, Life, AttackLevel, Stuff, Shield) VALUES ('%s', '%s', '%s', '%d', '%d', '%s', '%s')",
-					className, name, imageUrl, life, attackLevel, weapon, shield));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		HeroCharacter newChar = null;
+		if (className.equals("Warrior")) {
+			newChar = new Warrior(name, life, attackLevel, imageUrl, weapon, shield);
+		} else if (className.equals("Wizard")) {
+			newChar = new Wizard(name, life, attackLevel, imageUrl, weapon, shield);
+		} else {
+			System.out.println("Cette classe n'existe pas. Retour au menu précédent.");
+			return;
+		}
+		HeroDao heroDB = new HeroDao(conn);
+		boolean result = heroDB.create(newChar);
+		if (result) {
+			System.out.println("Personnage ajouté à la base de données.");
+		} else {
+			System.out.println("Echec, un problème a été rencontré pendant la création.");
 		}
 	}
 
-	@Override
-	protected void update(Statement state, Scanner sc) {
+	protected void updateHero(Scanner sc) {
 		int choice = -1;
 		while (choice != 0) {
-			list(state);
+			listHero();
+			int heroIndex = 0;
 			System.out.println("Entrez l'id du personnage à modifier (0 pour quitter): ");
 			choice = Integer.parseInt(sc.nextLine());
 			if (choice != 0) {
-				System.out.println(
-						"Que voulez-vous modifier ? Entrez le champ en toutes lettres\n(Type, Name, ImageURL, Life, AttackLevel, Stuff, Shield) :\n");
-				String field = sc.nextLine();
-				System.out.println("Entrez la nouvelle valeur: ");
-				String value = sc.nextLine();
-				try {
-
-					int sqlResult = state.executeUpdate(
-							String.format("UPDATE Hero SET %s = '%s' WHERE id = '%s'", field, value, choice));
-					if (sqlResult == 0) {
-						System.out.println("La modification a échoué.");
-					} else {
-						System.out.println("Le personnage a été modifié avec succès.");
+				HeroDao heroDB = new HeroDao(conn);
+				ArrayList<Hero> heroList = heroDB.findAll();
+				do {
+					heroIndex++;
+				} while ((heroIndex < heroList.size())
+						&& (((HeroCharacter) heroList.get(heroIndex)).getId() != choice));
+				if (heroIndex != heroList.size()) {
+					System.out.println(
+							"Que voulez-vous modifier ? Entrez le champ en toutes lettres\n(Name, ImageURL, Life, AttackLevel, Stuff, Shield) :\n");
+					String field = sc.nextLine();
+					System.out.println("Entrez la nouvelle valeur: ");
+					String value = sc.nextLine();
+					if (field.equals("Name")) {
+						((HeroCharacter) heroList.get(heroIndex)).setName(value);
+					} else if (field.equals("ImageUrl")) {
+						((HeroCharacter) heroList.get(heroIndex)).setImageUrl(value);
+					} else if (field.equals("Life")) {
+						try {
+							((HeroCharacter) heroList.get(heroIndex)).setLife(Integer.parseInt(value));
+						} catch (NumberFormatException e) {
+							System.out.println(
+									"Vous devez entrer un nombre si vous souhaitez modifier ce champ. Retour au menu précédent.");
+							return;
+						}
+					} else if (field.equals("AttackLevel")) {
+						try {
+							((HeroCharacter) heroList.get(heroIndex)).setAttackLevel(Integer.parseInt(value));
+						} catch (NumberFormatException e) {
+							System.out.println(
+									"Vous devez entrer un nombre si vous souhaitez modifier ce champ. Retour au menu précédent.");
+							return;
+						}
+					} else if (field.equals("Stuff")) {
+						((HeroCharacter) heroList.get(heroIndex)).getRightHand().setName(value);
+					} else if (field.equals("Shield")) {
+						((HeroCharacter) heroList.get(heroIndex)).setShield(value);
 					}
-
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					boolean result = heroDB.update(heroList.get(heroIndex));
+					if (result) {
+						System.out.println("Modification réussie.");
+					} else {
+						System.out.println("Echec de la modification.");
+					}
+				} else {
+					System.out.println("Ce personnage n'existe pas.");
 				}
 			}
 		}
 		System.out.println("Retour au menu précédent.");
 	}
 
-	@Override
-	protected void list(Statement state) {
-		try {
-			// L'objet ResultSet contient le résultat de la requête SQL
-			ResultSet result = state.executeQuery("SELECT * FROM Hero");
-			// On récupère les MetaData
-			ResultSetMetaData resultMeta = result.getMetaData();
-
-			System.out.println("\n**********************************");
-			// On affiche le nom des colonnes
-			for (int i = 1; i <= resultMeta.getColumnCount(); i++)
-				System.out.print("\t" + resultMeta.getColumnName(i).toUpperCase() + "\t *");
-
-			System.out.println("\n**********************************");
-
-			while (result.next()) {
-				for (int i = 1; i <= resultMeta.getColumnCount(); i++)
-					System.out.print("\t" + result.getObject(i).toString() + "\t |");
-
-				System.out.println("\n---------------------------------");
-
-			}
-
-			result.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	protected void listHero() {
+		HeroDao heroDB = new HeroDao(conn);
+		ArrayList<Hero> heroes = heroDB.findAll();
+		for (int i = 0; i < heroes.size(); i++) {
+			System.out.println(String.format("Personnage: %d, %s, %s, %s, %d, %d, %s, %s",
+					((HeroCharacter) heroes.get(i)).getId(), ((HeroCharacter) heroes.get(i)).getClassName(),
+					((HeroCharacter) heroes.get(i)).getName(), ((HeroCharacter) heroes.get(i)).getImageUrl(),
+					((HeroCharacter) heroes.get(i)).getLife(), ((HeroCharacter) heroes.get(i)).getAttackLevel(),
+					((HeroCharacter) heroes.get(i)).getRightHand().getName(),
+					((HeroCharacter) heroes.get(i)).getShield()));
 		}
 	}
 
-	@Override
-	protected void show(Statement state, Scanner sc) {
+	protected void showHero(Scanner sc) {
 		String choice = "";
 		while (!choice.equals("0")) {
-			list(state);
+			listHero();
 			System.out.println("Entrez l'id du personnage à Afficher (0 pour Quitter): ");
 			choice = sc.nextLine();
-			try {
-				if (!choice.equals("0")) {
-					// L'objet ResultSet contient le résultat de la requête SQL
-					ResultSet result = state.executeQuery(String.format("SELECT * FROM Hero WHERE id = '%s'", choice));
-					// On récupère les MetaData
-					ResultSetMetaData resultMeta = result.getMetaData();
-
-					System.out.println("\n**********************************");
-					// On affiche le nom des colonnes
-					for (int i = 1; i <= resultMeta.getColumnCount(); i++)
-						System.out.print("\t" + resultMeta.getColumnName(i).toUpperCase() + "\t *");
-
-					System.out.println("\n**********************************");
-
-					while (result.next()) {
-						for (int i = 1; i <= resultMeta.getColumnCount(); i++)
-							System.out.print("\t" + result.getObject(i).toString() + "\t |");
-
-						System.out.println("\n---------------------------------");
-
+//					// L'objet ResultSet contient le résultat de la requête SQL
+//					ResultSet result = state.executeQuery(String.format("SELECT * FROM Hero WHERE id = '%s'", choice));
+//					// On récupère les MetaData
+//					ResultSetMetaData resultMeta = result.getMetaData();
+//
+//					System.out.println("\n**********************************");
+//					// On affiche le nom des colonnes
+//					for (int i = 1; i <= resultMeta.getColumnCount(); i++)
+//						System.out.print("\t" + resultMeta.getColumnName(i).toUpperCase() + "\t *");
+//
+//					System.out.println("\n**********************************");
+//
+//					while (result.next()) {
+//						for (int i = 1; i <= resultMeta.getColumnCount(); i++)
+//							System.out.print("\t" + result.getObject(i).toString() + "\t |");
+//
+//						System.out.println("\n---------------------------------");
+//
+//					}
+			if (!choice.equals("0")) {
+				HeroDao heroDB = new HeroDao(conn);
+				ArrayList<Hero> heroes = heroDB.findAll();
+				for (int i = 0; i < heroes.size(); i++) {
+					if (Integer.toString(((HeroCharacter) heroes.get(i)).getId()).equals(choice)) {
+						System.out.println(String.format("Personnage: %d, %s, %s, %s, %d, %d, %s, %s",
+								((HeroCharacter) heroes.get(i)).getId(), ((HeroCharacter) heroes.get(i)).getClassName(),
+								((HeroCharacter) heroes.get(i)).getName(),
+								((HeroCharacter) heroes.get(i)).getImageUrl(),
+								((HeroCharacter) heroes.get(i)).getLife(),
+								((HeroCharacter) heroes.get(i)).getAttackLevel(),
+								((HeroCharacter) heroes.get(i)).getRightHand().getName(),
+								((HeroCharacter) heroes.get(i)).getShield()));
+						return;
 					}
-					result.close();
 				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Personnage non trouvé.");
 			}
 		}
 		System.out.println("Retour au menu précédent.");
 	}
 
-	@Override
-	protected void delete(Statement state, Scanner sc) {
+	protected void deleteHero(Scanner sc) {
 		String choice = "";
+		int heroIndex = 0;
 		while (!choice.equals("0")) {
-			list(state);
+			listHero();
 			System.out.println("Entrez l'id du personnage à supprimer (0 pour Quitter): ");
 			choice = sc.nextLine();
 			try {
 				if (!choice.equals("0")) {
-					int deleteStatus = state.executeUpdate(String.format("DELETE FROM Hero WHERE id = '%s'", choice));
-					if (deleteStatus == 0) {
-						System.out.println("Le personnage séléctionné n'existe pas. Recommencez.");
+					HeroDao heroDB = new HeroDao(conn);
+					ArrayList<Hero> heroList = heroDB.findAll();
+					do {
+						heroIndex++;
+					} while ((heroIndex < heroList.size())
+							&& (((HeroCharacter) heroList.get(heroIndex)).getId() != Integer.parseInt(choice)));
+					if (heroIndex != heroList.size()) {
+						boolean deleteStatus = heroDB.delete((HeroCharacter) heroList.get(heroIndex));
+						if (deleteStatus) {
+							System.out.println("Le personnage a bien été supprimé.");
+						} else {
+							System.out.println("Le personnage séléctionné n'existe pas. Recommencez.");
+						}
 					} else {
-						System.out.println("Le personnage a bien été supprimé.");
+						System.out.println("Ce personnage n'existe pas.");
 					}
 				}
-			} catch (SQLException e) {
-				System.out.println("Commande SQL erronée.");
+			} catch (NumberFormatException e) {
+				System.out.println("Vous devez entrer un nombre.");
 			}
 		}
 		System.out.println("Retour au menu précédent.");
-	}
-
-	public ArrayList<Hero> dbHeroesGetter() {
-		Statement state;
-		ArrayList<Hero> heroes = new ArrayList<Hero>();
-
-		// Création d'un objet Statement
-		try {
-			state = this.conn.createStatement();
-			try {
-				// L'objet ResultSet contient le résultat de la requête SQL
-				ResultSet result = state.executeQuery("SELECT * FROM Hero");
-				// On récupère les MetaData
-
-				while (result.next()) {
-					if (result.getObject("Type").equals("Warrior")) {
-						heroes.add(new Warrior((String) result.getObject("Name"), (int) result.getObject("Life"),
-								(int) result.getObject("AttackLevel")));
-					} else if (result.getObject("Type").equals("Wizard")) {
-						heroes.add(new Wizard((String) result.getObject("Name"), (int) result.getObject("Life"),
-								(int) result.getObject("AttackLevel")));
-					}
-				}
-
-				result.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			state.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return heroes;
 	}
 }
