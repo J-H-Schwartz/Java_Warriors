@@ -1,17 +1,17 @@
-package warriors.engine.database;
+package warriors.clientconsole;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import warriors.contracts.Hero;
+import warriors.engine.database.DefaultHeroDAOManager;
 import warriors.engine.heroes.HeroCharacter;
 import warriors.engine.heroes.Warrior;
 import warriors.engine.heroes.Wizard;
 
-public class DbCharacterManager {
-	
-	private Connection conn = DbConnect.dbConnect();
+public class ClientConsoleHeroManager {
+
+	private static DefaultHeroDAOManager defaultHeroDAOManager = new DefaultHeroDAOManager();
 
 	public void managerInterface(Scanner sc) {
 
@@ -35,7 +35,6 @@ public class DbCharacterManager {
 			} else
 				System.out.println("Commande non reconnue.");
 		}
-
 	}
 
 	protected void createHero(Scanner sc) {
@@ -68,9 +67,8 @@ public class DbCharacterManager {
 			System.out.println("Cette classe n'existe pas. Retour au menu précédent.");
 			return;
 		}
-		HeroDao heroDB = new HeroDao(conn);
-		boolean result = heroDB.create(newChar);
-		if (result) {
+		int result = defaultHeroDAOManager.createHero(newChar);
+		if (result >= 0) {
 			System.out.println("Personnage ajouté à la base de données.");
 		} else {
 			System.out.println("Echec, un problème a été rencontré pendant la création.");
@@ -81,12 +79,11 @@ public class DbCharacterManager {
 		int choice = -1;
 		while (choice != 0) {
 			listHero();
-			int heroIndex = 0;
+			int heroIndex = -1;
 			System.out.println("Entrez l'id du personnage à modifier (0 pour quitter): ");
 			choice = Integer.parseInt(sc.nextLine());
 			if (choice != 0) {
-				HeroDao heroDB = new HeroDao(conn);
-				ArrayList<Hero> heroList = heroDB.findAll();
+				ArrayList<Hero> heroList = defaultHeroDAOManager.getHeroes();
 				do {
 					heroIndex++;
 				} while ((heroIndex < heroList.size())
@@ -122,7 +119,7 @@ public class DbCharacterManager {
 					} else if (field.equals("Shield")) {
 						((HeroCharacter) heroList.get(heroIndex)).setShield(value);
 					}
-					boolean result = heroDB.update(heroList.get(heroIndex));
+					boolean result = defaultHeroDAOManager.updateHero((HeroCharacter) heroList.get(heroIndex));
 					if (result) {
 						System.out.println("Modification réussie.");
 					} else {
@@ -137,8 +134,7 @@ public class DbCharacterManager {
 	}
 
 	protected void listHero() {
-		HeroDao heroDB = new HeroDao(conn);
-		ArrayList<Hero> heroes = heroDB.findAll();
+		ArrayList<Hero> heroes = defaultHeroDAOManager.getHeroes();
 		for (int i = 0; i < heroes.size(); i++) {
 			System.out.println(String.format("Personnage: %d, %s, %s, %s, %d, %d, %s, %s",
 					((HeroCharacter) heroes.get(i)).getId(), ((HeroCharacter) heroes.get(i)).getClassName(),
@@ -175,8 +171,7 @@ public class DbCharacterManager {
 //
 //					}
 			if (!choice.equals("0")) {
-				HeroDao heroDB = new HeroDao(conn);
-				ArrayList<Hero> heroes = heroDB.findAll();
+				ArrayList<Hero> heroes = defaultHeroDAOManager.getHeroes();
 				for (int i = 0; i < heroes.size(); i++) {
 					if (Integer.toString(((HeroCharacter) heroes.get(i)).getId()).equals(choice)) {
 						System.out.println(String.format("Personnage: %d, %s, %s, %s, %d, %d, %s, %s",
@@ -198,21 +193,21 @@ public class DbCharacterManager {
 
 	protected void deleteHero(Scanner sc) {
 		String choice = "";
-		int heroIndex = 0;
+		int heroIndex = -1;
 		while (!choice.equals("0")) {
 			listHero();
 			System.out.println("Entrez l'id du personnage à supprimer (0 pour Quitter): ");
 			choice = sc.nextLine();
 			try {
 				if (!choice.equals("0")) {
-					HeroDao heroDB = new HeroDao(conn);
-					ArrayList<Hero> heroList = heroDB.findAll();
+					ArrayList<Hero> heroList = defaultHeroDAOManager.getHeroes();
 					do {
 						heroIndex++;
 					} while ((heroIndex < heroList.size())
 							&& (((HeroCharacter) heroList.get(heroIndex)).getId() != Integer.parseInt(choice)));
 					if (heroIndex != heroList.size()) {
-						boolean deleteStatus = heroDB.delete((HeroCharacter) heroList.get(heroIndex));
+						boolean deleteStatus = defaultHeroDAOManager
+								.deleteHero((HeroCharacter) heroList.get(heroIndex));
 						if (deleteStatus) {
 							System.out.println("Le personnage a bien été supprimé.");
 						} else {
@@ -228,4 +223,5 @@ public class DbCharacterManager {
 		}
 		System.out.println("Retour au menu précédent.");
 	}
+
 }

@@ -8,21 +8,21 @@ import warriors.contracts.Hero;
 import warriors.contracts.Map;
 import warriors.contracts.WarriorsAPI;
 import warriors.engine.Warriors;
-import warriors.engine.database.DbCharacterManager;
 
 public class ClientConsole {
 
 	private static String MENU_COMMENCER_PARTIE = "1";
 	private static String MENU_QUITTER = "2";
 	private static String MENU_PERSONNAGES = "3";
+	private static String MENU_REPRENDRE_PARTIE = "4";
 
 	public static void main(String[] args) {
 		WarriorsAPI warriors;
 		Scanner sc = new Scanner(System.in);
 		if (args.length > 0 && args[0].equals("--debug")) {
-			warriors = new Warriors(args[1], sc);
+			warriors = new Warriors(args[1]);
 		} else {
-			warriors = new Warriors("", sc);
+			warriors = new Warriors("");
 		}
 
 		String menuChoice = "";
@@ -31,7 +31,9 @@ public class ClientConsole {
 			if (menuChoice.equals(MENU_COMMENCER_PARTIE)) {
 				startGame(warriors, sc);
 			} else if (menuChoice.equals(MENU_PERSONNAGES)) {
-				new DbCharacterManager().managerInterface(sc);
+				new ClientConsoleHeroManager().managerInterface(sc);
+			} else if (menuChoice.equals(MENU_REPRENDRE_PARTIE)) {
+				new ClientConsoleResumeGame().resumeGame(warriors, sc);
 			}
 		} while (!menuChoice.equals(MENU_QUITTER));
 		sc.close();
@@ -78,6 +80,7 @@ public class ClientConsole {
 		System.out.println("1 - Commencer une partie");
 		System.out.println("2 - Quitter");
 		System.out.println("3 - Gérer personnages");
+		System.out.println("4 - Reprendre partie");
 		if (sc.hasNext()) {
 			String choice = sc.nextLine();
 			return choice;

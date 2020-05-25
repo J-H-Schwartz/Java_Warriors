@@ -1,17 +1,14 @@
 package warriors.engine;
 
 import java.io.BufferedReader;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 //Map serialization imports.
 //import java.io.FileWriter;
@@ -29,10 +26,9 @@ import warriors.contracts.WarriorsAPI;
 import warriors.engine.board.Board;
 import warriors.engine.board.BoardCase;
 import warriors.engine.board.JsonBoardCreator;
-import warriors.engine.database.DbConnect;
-import warriors.engine.database.HeroDao;
-import warriors.engine.heroes.Warrior;
-import warriors.engine.heroes.Wizard;
+import warriors.engine.database.DefaultHeroDAOManager;
+import warriors.engine.database.GameStateDAOManager;
+import warriors.engine.database.HeroDAOManager;
 import warriors.engine.heroes.HeroCharacter;
 
 public class Warriors implements WarriorsAPI {
@@ -43,41 +39,17 @@ public class Warriors implements WarriorsAPI {
 	private ArrayList<Hero> warriors;
 	private ArrayList<Map> maps;
 	private ArrayList<Game> games;
-	
-	private Connection conn = DbConnect.dbConnect();
 
 	private int debugDicesIndex;
 	private DebugStatus debugStatus;
 	private int[] debugFileDices;
 
-	public Warriors(String debugUrl, Scanner sc) {
+	public Warriors(String debugUrl) {
 		warriors = new ArrayList<Hero>();
 		maps = new ArrayList<Map>();
 		games = new ArrayList<Game>();
 
-		// Create 2 default Characters.
-		Hero warrior = new Warrior("WAR", 5, 5);
-		Hero wizard = new Wizard("WIZ", 3, 8);
-		warriors.add(warrior);
-		warriors.add(wizard);
-
-		// Create default random map.
-		Board map = new Board("Default_Random_Map");
-		maps.add(map);
-
-		// Imports all json board files from path.
-		JsonBoardCreator jsb = new JsonBoardCreator();
-		try {
-			Path dirPath = Paths.get(MAP_FOLDER_PATH);
-			try (DirectoryStream<Path> dirPaths = Files.newDirectoryStream(dirPath, "*.{json}")) { // .jdb only
-				for (Path file : dirPaths) {
-					Board newMap = (Board) jsb.createBoard(file);
-					maps.add(newMap);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		maps = getMapList(maps);
 
 		// Serialize Map to Json format from default random map.
 //		try (Writer writer = new FileWriter("src/main/ressources/maps/Map_5.json")) {
@@ -116,6 +88,26 @@ public class Warriors implements WarriorsAPI {
 		}
 	}
 
+	public static ArrayList<Map> getMapList(ArrayList<Map> maps) {
+		// Create default random map.
+		Board map = new Board("Default_Random_Map");
+		maps.add(map);
+
+		// Imports all json board files from path.
+		JsonBoardCreator jsb = new JsonBoardCreator();
+		try {
+			Path dirPath = Paths.get(MAP_FOLDER_PATH);
+			try (DirectoryStream<Path> dirPaths = Files.newDirectoryStream(dirPath, "*.{json}")) { // .jdb only
+				for (Path file : dirPaths) {
+					Board newMap = (Board) jsb.createBoard(file);
+					maps.add(newMap);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return maps;
+	}
 	@Override
 	public GameState createGame(String playerName, Hero hero, Map map) {
 		if (!(hero instanceof HeroCharacter)) {
@@ -123,6 +115,8 @@ public class Warriors implements WarriorsAPI {
 		}
 		Game newGame = new Game(playerName, hero, map, String.format("Game %d", games.size()));
 		games.add(newGame);
+		newGame.setGameID(Integer.toString(new GameStateDAOManager().createGame(newGame)));
+		((HeroCharacter) newGame.getHero()).setId(new HeroDAOManager().createHero(hero));
 		return newGame;
 	}
 
@@ -159,17 +153,22 @@ public class Warriors implements WarriorsAPI {
 			tmp = game.manageGameLoss(tmp);
 			debugDicesIndex = 0;
 		}
-		boolean saveResult = new HeroDao(conn).update((HeroCharacter)game.getCharacter());
-		if (!saveResult) {
-			tmp = tmp + "\nErreur lors de la sauvegarde !\n";
-		}
+
 		game.setLastLog(tmp);
+		boolean saveGame = new GameStateDAOManager().updateGame(game);
+		if (!saveGame) {
+			tmp = tmp + "\nErreur lors de la sauvegarde de la partie !\n";
+		}
+		boolean saveHero = new HeroDAOManager().updateHero((HeroCharacter) game.getCharacter());
+		if (!saveHero) {
+			tmp = tmp + "\nErreur lors de la sauvegarde du personnage !\n";
+		}
 		return game;
 	}
 
 	@Override
 	public List<? extends Hero> getHeroes() {
-		warriors = new HeroDao(conn).findAll();
+		warriors = new DefaultHeroDAOManager().getHeroes();
 		return warriors;
 	}
 
@@ -217,5 +216,11 @@ public class Warriors implements WarriorsAPI {
 		BoardCase actualCase = game.getBoard().getMapCases().get(game.getCurrentCase());
 		tmp = actualCase.manageCaseEvent(game.getCharacter(), tmp);
 		return tmp;
+	}
+
+	public void setDBGames(ArrayList<GameState> gameList) {
+		for (int i = 0; i < gameList.size(); i++) {
+			games.add((Game) gameList.get(i));
+		}
 	}
 }

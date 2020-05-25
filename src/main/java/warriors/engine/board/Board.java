@@ -89,7 +89,6 @@ public class Board implements Map {
 			map.get(i).setCaseID(i);
 		}
 		numberOfCase = map.size();
-		System.out.println(String.format("Plateau de %d cases généré !", index));
 	}
 
 	@Override

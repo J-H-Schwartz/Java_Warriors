@@ -28,9 +28,9 @@ public class Warrior extends HeroCharacter implements WarriorClassInterface {
 	public Warrior(String nameArg, int lifeArg, int attackPowerArg, String imageUrl, String weapon, String shield) {
 		this.className = "Warrior";
 		this.name = nameArg;
-		this.life = lifeArg;
 		this.imageUrl = imageUrl;
-		this.attackLevel = attackPowerArg;
+		this.setLife(lifeArg);
+		this.setAttackLevel(attackPowerArg);
 		switch (weapon) {
 		case "Sword":
 			this.rightHand = new Sword();
@@ -49,31 +49,22 @@ public class Warrior extends HeroCharacter implements WarriorClassInterface {
 		this.leftHand = new Potion();
 	}
 
-	public Warrior(String nameArg, int lifeArg, int attackPowerArg) {
-		this.className = "Warrior";
-		this.name = nameArg;
-		this.life = lifeArg;
-		this.attackLevel = attackPowerArg;
-		this.rightHand = new Weapon();
-		this.leftHand = new Potion();
-	}
-
 	@Override
 	public String manageLoot(Equipements loot, String type, String tmp) {
 		if (type.equals("Arme")) {
 			if (loot.getEffect() > this.getRightHand().getEffect()) {
 				this.setRightHand(loot);
 				tmp = tmp + String.format(
-						"\nVous avez trouvé une nouvelle arme ! %s, bonus d'attaque: %d\nVotre puissance d'attaque s'élève à %d",
+						"\nVous avez trouvé une nouvelle arme ! %s, bonus dattaque: %d\nVotre puissance dattaque sélève à %d",
 						loot.getName(), loot.getEffect(), this.getAttackMove());
 			} else {
 				tmp = tmp + String.format(
-						"\nVous avez trouvé une nouvelle arme, mais la votre est meilleure. %s, bonus d'attaque: %d",
+						"\nVous avez trouvé une nouvelle arme, mais la votre est meilleure. %s, bonus dattaque: %d",
 						loot.getName(), loot.getEffect());
 			}
 		} else if (type.equals("Sort")) {
 			tmp = tmp + String.format(
-					"\nVous avez trouvé un sort mais ne pouvez vous en équiper. %s, bonus d'attaque: %d",
+					"\nVous avez trouvé un sort mais ne pouvez vous en équiper. %s, bonus dattaque: %d",
 					loot.getName(), loot.getEffect());
 		} else if (type.equals("Potion")) {
 			this.setLife(this.getLife() + loot.getEffect());

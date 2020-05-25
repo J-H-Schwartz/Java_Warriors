@@ -46,7 +46,7 @@ public class BoardCaseEnemy extends BoardCase {
 			tmp = tmp + String.format("\nVous avez tué le %s ennemi.", enemy.getName());
 		} else {
 			tmp = enemy.attack(tmp, hero);
-			tmp = tmp + String.format("\nLe %s ennemi s'enfuit. Il vous reste %d points de vie.", enemy.getName(),
+			tmp = tmp + String.format("\nLe %s ennemi senfuit. Il vous reste %d points de vie.", enemy.getName(),
 					hero.getLife());
 		}
 		return tmp;

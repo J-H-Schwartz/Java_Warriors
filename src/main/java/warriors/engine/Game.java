@@ -30,7 +30,19 @@ public class Game implements GameState {
 		this.map = map;
 		this.currentCase = START_CASE;
 		this.gameStatus = GameStatus.IN_PROGRESS;
-		this.lastLog = "Lancement d'une nouvelle partie.";
+		this.lastLog = "Lancement dune nouvelle partie.";
+		this.debugStatus = DebugStatus.DEBUG_OFF;
+	}
+	
+	public Game(String playerName, Hero hero, Map map, String gameId, String lastLog, GameStatus gameStatus, int currentCase, int heroDefaultLife) {
+		this.gameId = gameId;
+		this.playerName = playerName;
+		this.hero = hero;
+		this.heroDefaultLife = heroDefaultLife;
+		this.map = map;
+		this.currentCase = currentCase;
+		this.gameStatus = gameStatus;
+		this.lastLog = lastLog;
 		this.debugStatus = DebugStatus.DEBUG_OFF;
 	}
 
@@ -48,7 +60,7 @@ public class Game implements GameState {
 		this.setCurrentCase(START_CASE);
 		this.getCharacter().setLife(this.heroDefaultLife);
 		this.setDebugStatus(DebugStatus.DEBUG_OFF);
-		tmp = tmp + String.format("\nVous n'avez plus de vie. Partie terminée.");
+		tmp = tmp + String.format("\nVous navez plus de vie. Partie terminée.");
 		return tmp;
 	}
 
@@ -136,5 +148,23 @@ public class Game implements GameState {
 
 	public Board getBoard() {
 		return (Board) map;
+	}
+
+	/**
+	 * @return the heroDefaultLife
+	 */
+	public int getHeroDefaultLife() {
+		return heroDefaultLife;
+	}
+
+	/**
+	 * @param heroDefaultLife the heroDefaultLife to set
+	 */
+	public void setHeroDefaultLife(int heroDefaultLife) {
+		this.heroDefaultLife = heroDefaultLife;
+	}
+
+	public void setGameID(String gameId) {
+		this.gameId = gameId;
 	}
 }

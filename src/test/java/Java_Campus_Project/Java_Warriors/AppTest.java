@@ -14,7 +14,7 @@ import org.junit.Test;
 import warriors.contracts.Map;
 import warriors.engine.board.Board;
 import warriors.engine.board.JsonBoardCreator;
-import warriors.engine.heroes.Warrior;
+//import warriors.engine.heroes.Warrior;
 
 /**
  * Unit test for simple App.
@@ -30,14 +30,14 @@ public class AppTest
         assertTrue( true );
     }
     
-    @Test
-    public void shouldSetWarriorLifeTo10() {
-    	Warrior warrior = new Warrior("Bob", 5, 5);
-    	
-    	warrior.setLife(10);
-    	
-    	assertEquals(10, warrior.getLife());
-    }
+//    @Test
+//    public void shouldSetWarriorLifeTo10() {
+//    	Warrior warrior = new Warrior("Bob", 5, 5);
+//    	
+//    	warrior.setLife(10);
+//    	
+//    	assertEquals(10, warrior.getLife());
+//    }
     
     @Test
     public void testDeserial() {
