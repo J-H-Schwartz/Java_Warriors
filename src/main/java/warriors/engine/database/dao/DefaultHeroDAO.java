@@ -16,7 +16,6 @@ public class DefaultHeroDAO extends DAO<Hero> {
 
 	public DefaultHeroDAO(Connection conn) {
 		super(conn);
-
 	}
 
 	@Override
@@ -77,8 +76,8 @@ public class DefaultHeroDAO extends DAO<Hero> {
 	public boolean delete(Hero hero) {
 		try {
 			Statement state = this.conn.createStatement();
-			int deleteStatus = state
-					.executeUpdate(String.format("DELETE FROM DefaultHero WHERE id = '%s'", ((HeroCharacter) hero).getId()));
+			int deleteStatus = state.executeUpdate(
+					String.format("DELETE FROM DefaultHero WHERE id = '%s'", ((HeroCharacter) hero).getId()));
 			if (deleteStatus == 0) {
 				return false;
 			} else {

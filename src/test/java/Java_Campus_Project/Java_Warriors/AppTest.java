@@ -13,8 +13,7 @@ import org.junit.Test;
 
 import warriors.contracts.Map;
 import warriors.engine.board.Board;
-import warriors.engine.board.JsonBoardCreator;
-//import warriors.engine.heroes.Warrior;
+import warriors.engine.board.jsonAdapter.JsonBoardCreator;
 
 /**
  * Unit test for simple App.

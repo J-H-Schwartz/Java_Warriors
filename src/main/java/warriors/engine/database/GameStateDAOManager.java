@@ -7,7 +7,7 @@ import warriors.engine.database.dao.DAO;
 import warriors.engine.database.dao.DAOFactory;
 
 public class GameStateDAOManager {
-	
+
 	private static DAO<GameState> gameStateDAO = DAOFactory.getGameStateDAO();
 
 	public ArrayList<GameState> getGames() {

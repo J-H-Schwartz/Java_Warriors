@@ -29,9 +29,9 @@ public class GameStateDAO extends DAO<GameState> {
 			int id = -1;
 			PreparedStatement state = this.conn.prepareStatement(String.format(
 					"INSERT INTO GameState(PlayerName, GameStatus, HeroID, Map, LastLog, CurrentCase, HeroDefaultLife) VALUES ('%s', '%s', '%d', '%s', '%s', '%d', '%d')",
-					newGame.getPlayerName(), newGame.getGameStatus().toString(), newGame.getCharacter().getId(), newGame.getMap().getName(),
-					newGame.getLastLog(), newGame.getCurrentCase(), newGame.getHeroDefaultLife()),
-					Statement.RETURN_GENERATED_KEYS);
+					newGame.getPlayerName(), newGame.getGameStatus().toString(), newGame.getCharacter().getId(),
+					newGame.getMap().getName(), newGame.getLastLog(), newGame.getCurrentCase(),
+					newGame.getHeroDefaultLife()), Statement.RETURN_GENERATED_KEYS);
 			int result = state.executeUpdate();
 			try (ResultSet generatedKeys = state.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
@@ -59,9 +59,9 @@ public class GameStateDAO extends DAO<GameState> {
 			Statement state = this.conn.createStatement();
 			int sqlResult = state.executeUpdate(String.format(
 					"UPDATE GameState SET PlayerName = '%s', GameStatus = '%s', HeroID = '%d',  Map = '%s', LastLog = '%s', CurrentCase = '%d', HeroDefaultLife = '%d' WHERE id = '%s'",
-					gameToUpdate.getPlayerName(), gameToUpdate.getGameStatus().toString(), gameToUpdate.getCharacter().getId(), gameToUpdate.getMap().getName(),
-					gameToUpdate.getLastLog(), gameToUpdate.getCurrentCase(), gameToUpdate.getHeroDefaultLife(),
-					gameToUpdate.getGameId()));
+					gameToUpdate.getPlayerName(), gameToUpdate.getGameStatus().toString(),
+					gameToUpdate.getCharacter().getId(), gameToUpdate.getMap().getName(), gameToUpdate.getLastLog(),
+					gameToUpdate.getCurrentCase(), gameToUpdate.getHeroDefaultLife(), gameToUpdate.getGameId()));
 			if (sqlResult == 0) {
 				return false;
 			} else {
@@ -103,7 +103,7 @@ public class GameStateDAO extends DAO<GameState> {
 			Game tmpGame = null;
 			ArrayList<Map> maps = new ArrayList<Map>();
 			ArrayList<Hero> heroes = new HeroDAOManager().getHeroes();
-			maps = Warriors.getMapList(maps);
+			maps = Warriors.getMapList();
 			while (result.next()) {
 				int id = result.getInt("id");
 				String gameStatusString = result.getString("GameStatus");

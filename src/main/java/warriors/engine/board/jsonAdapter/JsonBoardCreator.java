@@ -1,4 +1,4 @@
-package warriors.engine.board;
+package warriors.engine.board.jsonAdapter;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -12,13 +12,15 @@ import com.google.gson.InstanceCreator;
 import com.google.gson.stream.JsonReader;
 
 import warriors.contracts.Map;
+import warriors.engine.board.Board;
+import warriors.engine.board.BoardCase;
 
 public class JsonBoardCreator implements InstanceCreator<Map> {
 	private Path file;
 
 	public Board createBoard(Path file) {
 		this.file = file;
-		Board newMap = (Board)createInstance(getClass());
+		Board newMap = (Board) createInstance(getClass());
 		return newMap;
 	}
 

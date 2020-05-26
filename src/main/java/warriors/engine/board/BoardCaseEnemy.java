@@ -23,7 +23,7 @@ public class BoardCaseEnemy extends BoardCase {
 			this.enemy = new EnemyDragon();
 		}
 	}
-	
+
 	public BoardCaseEnemy(int id, EnemyType type, int life, int attackPower) {
 		super(id);
 		this.caseStatus = CaseType.ENEMY_CASE;

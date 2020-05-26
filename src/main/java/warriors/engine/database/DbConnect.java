@@ -11,7 +11,7 @@ public class DbConnect {
 	private static String passwd = "jdbcmdp";
 
 	public static Connection dbConnect() {
-		
+
 		if (conn == null) {
 			try {
 				conn = DriverManager.getConnection(url, user, passwd);

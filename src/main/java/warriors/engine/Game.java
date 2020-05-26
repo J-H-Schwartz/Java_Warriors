@@ -33,8 +33,9 @@ public class Game implements GameState {
 		this.lastLog = "Lancement dune nouvelle partie.";
 		this.debugStatus = DebugStatus.DEBUG_OFF;
 	}
-	
-	public Game(String playerName, Hero hero, Map map, String gameId, String lastLog, GameStatus gameStatus, int currentCase, int heroDefaultLife) {
+
+	public Game(String playerName, Hero hero, Map map, String gameId, String lastLog, GameStatus gameStatus,
+			int currentCase, int heroDefaultLife) {
 		this.gameId = gameId;
 		this.playerName = playerName;
 		this.hero = hero;
@@ -91,7 +92,7 @@ public class Game implements GameState {
 	public void setDebugDicesFile(int[] debugDicesFile) {
 		this.debugDicesFile = debugDicesFile;
 	}
-	
+
 	/**
 	 * @param currentCase the currentCase to set
 	 */

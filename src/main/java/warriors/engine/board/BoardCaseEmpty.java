@@ -1,6 +1,6 @@
 package warriors.engine.board;
 
-public class BoardCaseEmpty extends BoardCase{
+public class BoardCaseEmpty extends BoardCase {
 
 	public BoardCaseEmpty(int id) {
 		super(id);

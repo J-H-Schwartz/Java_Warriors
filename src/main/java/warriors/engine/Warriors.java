@@ -3,10 +3,10 @@ package warriors.engine;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+//import java.sql.PreparedStatement;
+//import java.sql.ResultSet;
+//import java.sql.SQLException;
+//import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +15,7 @@ import java.util.List;
 //import java.io.Writer;
 //import com.google.gson.Gson;
 //import com.google.gson.GsonBuilder;
+//import com.google.gson.JsonObject;
 //import com.google.gson.Gson;
 //import com.google.gson.GsonBuilder;
 //import warriors.engine.board.InterfaceAdapter;
@@ -23,18 +24,18 @@ import warriors.contracts.GameState;
 import warriors.contracts.Hero;
 import warriors.contracts.Map;
 import warriors.contracts.WarriorsAPI;
-import warriors.engine.board.Board;
 import warriors.engine.board.BoardCase;
-import warriors.engine.board.JsonBoardCreator;
+//import warriors.engine.database.DbConnect;
 import warriors.engine.database.DefaultHeroDAOManager;
 import warriors.engine.database.GameStateDAOManager;
 import warriors.engine.database.HeroDAOManager;
+import warriors.engine.database.MapDAOManager;
+import warriors.engine.database.MapLocalDAOManager;
 import warriors.engine.heroes.HeroCharacter;
 
 public class Warriors implements WarriorsAPI {
 
 	private static final int DICE_FACES = 6;
-	private static final String MAP_FOLDER_PATH = "src/main/ressources/maps";
 
 	private ArrayList<Hero> warriors;
 	private ArrayList<Map> maps;
@@ -46,15 +47,31 @@ public class Warriors implements WarriorsAPI {
 
 	public Warriors(String debugUrl) {
 		warriors = new ArrayList<Hero>();
-		maps = new ArrayList<Map>();
 		games = new ArrayList<Game>();
-
-		maps = getMapList(maps);
-
-		// Serialize Map to Json format from default random map.
-//		try (Writer writer = new FileWriter("src/main/ressources/maps/Map_5.json")) {
+		maps = getMapList();
+//		Board map = new Board("Map_3");
+//		// Serialize Map to Json format from default random map.
+//		try {
 //			Gson gson = new GsonBuilder().registerTypeAdapter(BoardCase.class, new InterfaceAdapter<BoardCase>()).create();
-//			gson.toJson(map, writer);
+//			String jsonString = gson.toJson(map);
+//			try {
+//				int id = -1;
+//				PreparedStatement state = DbConnect.dbConnect().prepareStatement(String.format(
+//						"INSERT INTO Maps(Name, NumberOfCases, Data) VALUES ('%s', '%d', '%s')",
+//						map.getName(), map.getNumberOfCase(), jsonString),
+//						Statement.RETURN_GENERATED_KEYS);
+//				state.executeUpdate();
+//				try (ResultSet generatedKeys = state.getGeneratedKeys()) {
+//					if (generatedKeys.next()) {
+//						id = generatedKeys.getInt(1);
+//					} else {
+//						throw new SQLException("Creating Map failed, no ID obtained.");
+//					}
+//				}
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 //		} catch (Exception e) {
 //			System.out.println(e);
 //		}
@@ -88,26 +105,18 @@ public class Warriors implements WarriorsAPI {
 		}
 	}
 
-	public static ArrayList<Map> getMapList(ArrayList<Map> maps) {
-		// Create default random map.
-		Board map = new Board("Default_Random_Map");
-		maps.add(map);
+	public static ArrayList<Map> getMapList() {
+		ArrayList<Map> maps = new ArrayList<Map>();
+		ArrayList<Map> tmpLocalMaps = new ArrayList<Map>();
 
-		// Imports all json board files from path.
-		JsonBoardCreator jsb = new JsonBoardCreator();
-		try {
-			Path dirPath = Paths.get(MAP_FOLDER_PATH);
-			try (DirectoryStream<Path> dirPaths = Files.newDirectoryStream(dirPath, "*.{json}")) { // .jdb only
-				for (Path file : dirPaths) {
-					Board newMap = (Board) jsb.createBoard(file);
-					maps.add(newMap);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		tmpLocalMaps = new MapLocalDAOManager().getMaps();
+		maps = new MapDAOManager().getMaps();
+		for (int i = 0; i < tmpLocalMaps.size(); i++) {
+			maps.add(tmpLocalMaps.get(i));
 		}
 		return maps;
 	}
+
 	@Override
 	public GameState createGame(String playerName, Hero hero, Map map) {
 		if (!(hero instanceof HeroCharacter)) {

@@ -51,7 +51,7 @@ public class BoardCaseUpgrade extends BoardCase {
 	@Override
 	public String manageCaseEvent(HeroCharacter hero, String tmp) {
 		String[] containment = this.contains.split("-");
-		tmp = hero.manageLoot(this.getLoot(),containment[1], tmp);
+		tmp = hero.manageLoot(this.getLoot(), containment[1], tmp);
 		return tmp;
 	}
 }
